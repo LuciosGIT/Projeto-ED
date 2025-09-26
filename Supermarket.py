@@ -10,7 +10,7 @@ class Supermarket:
     def add_product(self, product):
         self.inventory.insert_end(product)  
     
-    # Solução 2: Usar o método values() que já existe
+
     def find_product(self, code):
         for product in self.inventory.values():
             if product.code == code:

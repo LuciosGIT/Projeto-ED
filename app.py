@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# Importar suas classes (certifique-se de que os arquivos estão no mesmo diretório)
 from Node import Node
 from LinkedList import LinkedList  
 from Queue import Queue
@@ -10,7 +9,7 @@ from Supermarket import Supermarket
 from Product import Product
 from Customer import Customer
 
-# Classe Product estendida para incluir quantidade no estoque
+
 class ProductWithStock(Product):
     def __init__(self, code, name, price, quantity=0):
         super().__init__(code, name, price)
@@ -19,12 +18,12 @@ class ProductWithStock(Product):
     def __str__(self):
         return f"{self.name} (#{self.code}) - R${self.price:.2f} - Qtd: {self.quantity}"
 
-# Classe Customer estendida para incluir timestamp e métodos auxiliares
+
 class CustomerWithExtras(Customer):
     def __init__(self, name):
         super().__init__(name)
         self.timestamp = datetime.now()
-        self.quantities = {}  # Para rastrear quantidades de cada produto
+        self.quantities = {}  
     
     def add_product_with_quantity(self, product, quantity):
         for _ in range(quantity):
@@ -50,7 +49,7 @@ class CustomerWithExtras(Customer):
     def __str__(self):
         return f"{self.name} - R${self.total_value():.2f} - {self.get_cart_count()} tipos de itens"
 
-# Método auxiliar para a Queue (adicione isso ao seu Queue.py se quiser)
+
 def get_queue_list(queue):
     """Função auxiliar para obter lista da fila sem modificá-la"""
     result = []
@@ -60,21 +59,21 @@ def get_queue_list(queue):
         current = current.next
     return result
 
-# Inicializar o sistema
+
 if 'supermarket' not in st.session_state:
     st.session_state.supermarket = Supermarket()
-    # Adicionar alguns produtos de exemplo
+
     st.session_state.supermarket.add_product(ProductWithStock("001", "Arroz 5kg", 25.90, 100))
     st.session_state.supermarket.add_product(ProductWithStock("002", "Feijão 1kg", 8.50, 50))
     st.session_state.supermarket.add_product(ProductWithStock("003", "Açúcar 1kg", 4.20, 75))
     st.session_state.supermarket.add_product(ProductWithStock("004", "Óleo de Soja", 6.80, 30))
     st.session_state.supermarket.add_product(ProductWithStock("005", "Macarrão 500g", 3.50, 120))
 
-# Interface principal
+
 st.title("🛒 Sistema de Supermercado")
 st.sidebar.title("Menu")
 
-# Menu lateral
+
 menu_option = st.sidebar.selectbox(
     "Escolha uma opção:",
     ["📊 Dashboard", "📦 Gerenciar Produtos", "👥 Fila de Atendimento", "🛍️ Simular Compra"]
@@ -82,7 +81,7 @@ menu_option = st.sidebar.selectbox(
 
 supermarket = st.session_state.supermarket
 
-# Dashboard
+
 if menu_option == "📊 Dashboard":
     st.header("Dashboard do Supermercado")
     
@@ -101,7 +100,7 @@ if menu_option == "📊 Dashboard":
         total_inventory_value = sum(p.price * p.quantity for p in products)
         st.metric("Valor Total Estoque", f"R$ {total_inventory_value:,.2f}")
     
-    # Gráfico de produtos
+
     if products:
         st.subheader("Estoque por Produto")
         df_products = pd.DataFrame([
@@ -110,7 +109,6 @@ if menu_option == "📊 Dashboard":
         ])
         st.bar_chart(df_products.set_index("Produto")["Quantidade"])
 
-# Gerenciar Produtos
 elif menu_option == "📦 Gerenciar Produtos":
     st.header("Gerenciamento de Produtos")
     
@@ -126,7 +124,7 @@ elif menu_option == "📦 Gerenciar Produtos":
             
             if st.form_submit_button("Adicionar Produto"):
                 if code and name:
-                    # Verificar se o código já existe
+                
                     existing = supermarket.find_product(code)
                     if existing:
                         st.error("Produto com este código já existe!")
@@ -172,7 +170,7 @@ elif menu_option == "📦 Gerenciar Produtos":
         else:
             st.info("Nenhum produto cadastrado.")
 
-# Fila de Atendimento
+
 elif menu_option == "👥 Fila de Atendimento":
     st.header("Fila de Atendimento")
     
@@ -209,7 +207,7 @@ elif menu_option == "👥 Fila de Atendimento":
             else:
                 st.warning("Nenhum cliente na fila!")
 
-# Simular Compra
+
 elif menu_option == "🛍️ Simular Compra":
     st.header("Simular Processo de Compra")
     
@@ -244,7 +242,7 @@ elif menu_option == "🛍️ Simular Compra":
                 for product in selected_products:
                     quantity = quantities[product.code]
                     customer.add_product_with_quantity(product, quantity)
-                    # Reduzir estoque (simulação)
+                  
                     product.quantity -= quantity
                 
                 supermarket.add_customer(customer)
@@ -254,7 +252,7 @@ elif menu_option == "🛍️ Simular Compra":
             else:
                 st.error("Preencha o nome do cliente e selecione pelo menos um produto!")
 
-# Rodapé
+
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Desenvolvido com:**")
 st.sidebar.markdown("- LinkedList (Lista Ligada)")
